@@ -1,6 +1,6 @@
 // StyledButtonをStorybookで表示するためには「コンポーネント名.stories.tsx」というファイルを作る
 import { useState } from "react";
-import { Meta } from "@storybook/react";
+import { Meta, StoryFn } from "@storybook/react";
 import { StyledButton } from "@/components/StyledButton/page";
 import { StyledButtonProps } from "@/type";
 import { action } from "@storybook/addon-actions";
@@ -12,13 +12,45 @@ export default {
   title: "StyledButton",
   // 使用するコンポーネント
   component: StyledButton,
-  // onClickがよばれたときの動作を簡単に確認したいときは、argTypesを使うと確認できる
-  // 以下はonClickがよばれたときにclickedというアクションを出力する
-  // StorybokkのActionsタブで確認できる
-  argTypes: { onClick: { action: "clicked" } },
+
+  argTypes: {
+    // onClickがよばれたときの動作を簡単に確認したいときは、argTypesを使うと確認できる
+    // 以下はonClickがよばれたときにclickedというアクションを出力する
+    // StorybokkのActionsタブで確認できる
+    onClick: { action: "clicked" },
+
+    // StoryのControlタブでコンポーネントに渡すpropsの制御ができる
+    // Templateコンポーネントで使用するControlタブで制御したいデータを定義する
+    variant: {
+      // ラジオボタンでprimary、success、transparentを切り替えられるようにする
+      control: { type: "radio" },
+      options: ["primary", "success", "transparent"],
+    },
+    children: {
+      // ボタンの名称をテキストで変更できるようにする
+      control: { type: "text" },
+    },
+  },
   // 教材ではComponentMetaとないっているが、非推奨になったため現在はMetaを使用している
   // REFE: https://zenn.dev/route06/articles/storybook-v7-deprecations
 } as Meta<typeof StyledButton>;
+
+// 教材ではComponentStoryとないっているが、非推奨になったため現在はStoryFnを使用している
+// REFE: https://qiita.com/KokiSakano/items/a6e291b6292f025bd037
+// オブジェクト用がStoryObj、関数用がStoryFnっぽい
+// Storyから渡されたpropsをそのまま渡すコンポーネントを定義
+const Template: StoryFn<typeof StyledButton> = (args: StyledButtonProps) => (
+  <StyledButton {...args} />
+);
+
+// Storyとコンポーネントを紐づけるとControlタブでpropsを動的に制御できるStoryが完成
+export const TemplateTest = Template.bind({});
+
+// デフォルトのpropsを設定
+TemplateTest.args = {
+  variant: "primary",
+  children: "Primary",
+};
 
 // incrementという名前でactionを出力できるようにする
 const incrementAction = action("increment");
