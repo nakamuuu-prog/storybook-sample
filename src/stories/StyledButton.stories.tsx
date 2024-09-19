@@ -4,6 +4,9 @@ import { Meta, StoryFn } from "@storybook/react";
 import { StyledButton } from "@/components/StyledButton/page";
 import { StyledButtonProps } from "@/type";
 import { action } from "@storybook/addon-actions";
+import MDXDocument from "./StyledButton.mdx";
+// @storybook/addon-linksのlinkToを使うと別のストーリーに遷移することができる
+import { linkTo } from "@storybook/addon-links";
 
 // メタデータオブジェクトというファイル内のStory設定
 export default {
@@ -29,6 +32,12 @@ export default {
     children: {
       // ボタンの名称をテキストで変更できるようにする
       control: { type: "text" },
+    },
+  },
+  parameters: {
+    // @storybook/addon-essentialsがインストールされていれば、mdxファイルを読み込んでDocsを表示できる
+    docs: {
+      page: MDXDocument,
     },
   },
   // 教材ではComponentMetaとないっているが、非推奨になったため現在はMetaを使用している
@@ -77,7 +86,12 @@ export const Primary = (props: StyledButtonProps) => {
 
 export const Success = (props: StyledButtonProps) => {
   return (
-    <StyledButton {...props} variant="success">
+    <StyledButton
+      {...props}
+      variant="success"
+      // クリックするとTransparentに遷移する
+      onClick={linkTo("StyledButton", "Transparent")}
+    >
       Success
     </StyledButton>
   );
